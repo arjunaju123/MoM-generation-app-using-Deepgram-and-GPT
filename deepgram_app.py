@@ -59,11 +59,22 @@ def create_transcript(response):
     lines.append(TAG + str(curr_speaker) + ':' + curr_line)
     return '\n'.join(lines)
 
+# Function to translate text using OpenAI's GPT
+def translate_text(text, target_language):
+    prompt = f"Translate the following text to {target_language}:\n\n{text}. All words should be generated in provided language - {target_language} only"
+    response = openai_client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=2000
+    )
+    return response.choices[0].message.content
+
 # Function to create a prompt for the MoM generator
-def create_prompt(transcript,language='english'):
+def create_prompt(transcript, language='english'):
     current_date = datetime.now().strftime("%d-%m-%Y")
     prompt = f"""
-    Imagine you are a MoM generator from the following transcript. Take the below conversation from a meeting and generate the minutes of the meeting and create a detailed table containing the list of tasks assigned to each person, the status of each task, and the deadlines. Write dates as well in the output table. Today is {current_date}. Identify the speaker names from the meeting transcript.
+    You are a MoM generator from the following transcript. Take the below conversation from a meeting and generate the minutes of the meeting and create a detailed table containing the list of tasks assigned to each person, the status of each task, and the deadlines. Write dates as well in the output table. Today is {current_date}. Identify the speaker names from the meeting transcript.
+    
     Generate the Minutes of Meeting in {language} only.
 
     {transcript}
@@ -96,25 +107,26 @@ st.write(
     """  
 -   Upload a mp3 file, transcribe and diarize it, then export it to a text file!
 -   Use cases: call centres, team meetings, training videos, school calls etc.
-	    """
+    """
 )
 
 st.text("")
 
 # Initialize variables to store the transcript and MoM
 transcript = None
+translated_transcript = None
 mom = None
 
 with st.form(key="my_form"):
     # File upload
-    uploaded_file = st.file_uploader("Upload an audio file", type=["mp3"])
+    uploaded_file = st.file_uploader("Upload an audio file", type=["mp3","wav"])
 
     # Language selection
     language = st.selectbox("Select the language for MoM:", ["english", "japanese"])
 
     st.info(
         f"""
-        👆 Upload a .mp3 file. Try a sample: [Sample 01](https://github.com/CharlyWargnier/CSVHub/blob/main/Wave_files_demos/Welcome.wav?raw=true) | [Sample 02](https://github.com/CharlyWargnier/CSVHub/blob/main/Wave_files_demos/The_National_Park.wav?raw=true)
+        👆 Upload a .mp3 / .wav file. Try a sample: [Sample 01](https://github.com/arjunaju123/MoM-generation-app-using-Deepgram-and-GPT/blob/master/test_audio.mp3?raw=true) | [Sample 02](https://github.com/arjunaju123/MoM-generation-app-using-Deepgram-and-GPT/blob/master/test_audio.wav?raw=true)
         """
     )
 
@@ -128,21 +140,27 @@ with st.form(key="my_form"):
                 # Create the transcript
                 transcript = create_transcript(response)
                 
+                # Translate the transcript if the selected language is not English
+                if language != 'english':
+                    translated_transcript = translate_text(transcript, language)
+                else:
+                    translated_transcript = transcript
+
                 # Create prompt for MoM generation
-                prompt = create_prompt(transcript,language)
+                prompt = create_prompt(translated_transcript, language)
                 
                 # Generate MoM
                 mom = generate_mom(prompt)
             except Exception as e:
                 st.error(f"Error: {e}")
 
-# Display the audio player, transcript, and MoM if available
+# Display the audio player, translated transcript, and MoM if available
 if uploaded_file:
     st.audio(uploaded_file, format="audio/mp3")
 
-if transcript:
-    st.subheader("Diarized Transcript")
-    st.info(transcript)
+if translated_transcript:
+    st.subheader(f"Diarized Transcript in {language.capitalize()}")
+    st.info(translated_transcript)
 
 if mom:
     st.subheader("Minutes of Meeting")

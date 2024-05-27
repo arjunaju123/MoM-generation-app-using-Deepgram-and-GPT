@@ -7,6 +7,7 @@ import httpx
 import json
 from deepgram import DeepgramClient, DeepgramClientOptions, PrerecordedOptions
 from openai import OpenAI
+import time
 
 # Load environment variables
 load_dotenv()
@@ -61,7 +62,7 @@ def create_transcript(response):
 
 # Function to translate text using OpenAI's GPT
 def translate_text(text, target_language):
-    prompt = f"Translate the following text to {target_language}:\n\n{text}"
+    prompt = f"Translate the following text to {target_language}:\n\n{text}. All words should be generated in provided language - {target_language} only"
     response = openai_client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
@@ -75,7 +76,7 @@ def create_prompt(transcript, language='english'):
     prompt = f"""
     You are a MoM generator from the following transcript. Take the below conversation from a meeting and generate the minutes of the meeting and create a detailed table containing the list of tasks assigned to each person, the status of each task, and the deadlines. Write dates as well in the output table. Today is {current_date}. Identify the speaker names from the meeting transcript.
     
-    Generate the Minutes of Meeting in {language} only. Make sure that the meeting transcript and MoM generated in provided language only.
+    Generate the Minutes of Meeting in {language} only.
 
     {transcript}
     """
@@ -126,31 +127,41 @@ with st.form(key="my_form"):
 
     st.info(
         f"""
-        👆 Upload a .mp3 / .wav file. Try a sample: [Sample 01](https://github.com/CharlyWargnier/CSVHub/blob/main/Wave_files_demos/Welcome.wav?raw=true) | [Sample 02](https://github.com/CharlyWargnier/CSVHub/blob/main/Wave_files_demos/The_National_Park.wav?raw=true)
+        👆 Upload a .mp3 / .wav file. Try a sample: [Sample 01](https://github.com/arjunaju123/MoM-generation-app-using-Deepgram-and-GPT/blob/master/test_audio.mp3?raw=true) | [Sample 02](https://github.com/arjunaju123/MoM-generation-app-using-Deepgram-and-GPT/blob/master/test_audio.wav?raw=true)
         """
     )
 
     submit_button = st.form_submit_button(label="Generate Minutes of Meeting")
     if submit_button and uploaded_file is not None:
-        with st.spinner("Transcribing and generating MoM..."):
+        with st.status("Transcribing and generating MoM...",expanded=True) as status:
             try:
                 # Transcribe the audio file
+                start_time = time.time()
+                st.write("Transcribing audio...")
                 response = transcribe_audio(uploaded_file)
                 
                 # Create the transcript
                 transcript = create_transcript(response)
-                
+                transcribe_time = time.time() - start_time
                 # Translate the transcript if the selected language is not English
                 if language != 'english':
                     translated_transcript = translate_text(transcript, language)
                 else:
                     translated_transcript = transcript
 
+                st.write(f"Time taken to transcribe: {transcribe_time:.2f} seconds")
+
                 # Create prompt for MoM generation
                 prompt = create_prompt(translated_transcript, language)
                 
+                st.write("Generating MoM...")
+                start_time = time.time()
                 # Generate MoM
                 mom = generate_mom(prompt)
+                generate_mom_time = time.time() - start_time
+                st.write(f"Time taken to generate MoM: {generate_mom_time:.2f} seconds")
+
+                status.update(label="Transcription and Generation Completed!", state="complete", expanded=False)
             except Exception as e:
                 st.error(f"Error: {e}")
 
