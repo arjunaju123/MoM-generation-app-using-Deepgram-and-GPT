@@ -3,7 +3,8 @@ ffmpeg
 pydub
 translate
 requests==2.27.1
-streamlit==1.24.0  
+# streamlit==1.24.0 # No axios error when uploading files
+streamlit==1.35.0 # to use the st.status feature but axios error. disable xsrfprotection to run file.
 openai 
 deepgram-sdk
 # git+https://github.com/openai/whisper.git
