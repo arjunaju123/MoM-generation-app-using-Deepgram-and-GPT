@@ -1,0 +1,9 @@
+speechbrain==0.5.16
+pydub
+translate
+requests==2.27.1
+streamlit  
+openai 
+deepgram-sdk
+# git+https://github.com/openai/whisper.git
+# git+https://github.com/pyannote/pyannote-audio
