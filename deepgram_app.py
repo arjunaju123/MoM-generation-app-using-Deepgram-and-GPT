@@ -60,10 +60,11 @@ def create_transcript(response):
     return '\n'.join(lines)
 
 # Function to create a prompt for the MoM generator
-def create_prompt(transcript):
+def create_prompt(transcript,language='english'):
     current_date = datetime.now().strftime("%d-%m-%Y")
     prompt = f"""
     Imagine you are a MoM generator from the following transcript. Take the below conversation from a meeting and generate the minutes of the meeting and create a detailed table containing the list of tasks assigned to each person, the status of each task, and the deadlines. Write dates as well in the output table. Today is {current_date}. Identify the speaker names from the meeting transcript.
+    Generate the Minutes of Meeting in {language} only.
 
     {transcript}
     """
@@ -108,9 +109,12 @@ with st.form(key="my_form"):
     # File upload
     uploaded_file = st.file_uploader("Upload an audio file", type=["mp3"])
 
+    # Language selection
+    language = st.selectbox("Select the language for MoM:", ["english", "japanese"])
+
     st.info(
         f"""
-        👆 Upload a .mp3 file. Try a sample: [Sample 01](https://github.com/arjunaju123/MoM-generation-app-using-Deepgram-and-GPT/blob/master/test_audio.mp3?raw=true) | [Sample 02](https://github.com/arjunaju123/MoM-generation-app-using-Deepgram-and-GPT/blob/master/test_audio.mp3?raw=true)
+        👆 Upload a .mp3 file. Try a sample: [Sample 01](https://github.com/CharlyWargnier/CSVHub/blob/main/Wave_files_demos/Welcome.wav?raw=true) | [Sample 02](https://github.com/CharlyWargnier/CSVHub/blob/main/Wave_files_demos/The_National_Park.wav?raw=true)
         """
     )
 
@@ -125,7 +129,7 @@ with st.form(key="my_form"):
                 transcript = create_transcript(response)
                 
                 # Create prompt for MoM generation
-                prompt = create_prompt(transcript)
+                prompt = create_prompt(transcript,language)
                 
                 # Generate MoM
                 mom = generate_mom(prompt)

@@ -1,4 +1,5 @@
 speechbrain==0.5.16
+ffmpeg
 pydub
 translate
 requests==2.27.1
