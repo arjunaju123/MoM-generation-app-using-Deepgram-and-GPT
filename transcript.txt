@@ -1,0 +1,21 @@
+Gokul: Okay. Yeah. Hi. I'm Gokul, and I'm into the data science team from Experian.
+
+Avinash: Hi. I'm Avinash, and I'm also in the data science team of Experion. Yeah. That's true. Continue with the project updates, Gokul.
+
+Gokul: Okay. On your side.
+
+Anish: Yeah. So, basically, on the projects updates on the projects that I am working on. So I'm currently looking into the voice to text project, and, we're almost done with achieving the outputs. There are little pieces here and there, which needs fine tuning, which I'm looking into right now. What about your, Avinash? What's the status?
+
+Avinash: K. So I'm currently working on a chatbot project. We have successfully created a bot, in our local PC, but, we tried uploading it into Azure, but, we are facing some error. So we first thought it was like an IP error. We went through that, and this resolved that first, but there are there is another problem we are still facing. We don't know what the problem we are facing. Still, we are thinking that it is a database issue, but we are still looking into it. Yeah. So that's the status of my project.
+
+Gokul: Alright. Yeah.
+
+Anish: So in my case, there are, non major issues, but, one current problem that I'm facing is regarding, speaker identification, tagging the speaker names to each of the speakers. So we are planning to do an introduction in the beginning of the call so that, you know, I think it would be easier for us to tag it to the speakers. So I'm just, working on that right now. Other than that, I think everything is good on my end as well.
+
+Gokul: Mhmm. K.
+
+Avinash: Okay. Cool. So we are also trying to resolve it. So, one of our teammate is away. So she says that she'll be available on time. So we'll check after that, I guess. And that's about it on my side.
+
+Anish: Oh, okay. Okay. Yeah. I think then, it's totally cool we can sort it out, I see. We'll see. Alright. Thanks, Avinash. We'll update. Thank you.
+
+Avinash: Thank you. Thank you. Thank you, Gokul.

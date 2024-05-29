@@ -69,7 +69,7 @@ def translate_text(text, target_language):
  
     print("text is ",text)
     #prompt = f"Translate the following text to {target_language}:\n\n{text}.Instead of 'SPEAKER 0' and 'SPEAKER 1' in text give names Gokul and Avinash. All words should be generated in provided language - {target_language} only"
-    prompt = sub_prompt+f"\n{text}"+f"\n\nThis is the output text from a diarization model .Find the person names from the output text given here and replace the speaker ids like SPEAKER 0,SPEAKER 1 etc with corresponding person names.For example: Gokul: 'Okay. Yeah. Hi. I'm Gokul, and I'm I'm into the data science team from Experion.'\n\n\n'Avinash: 'Hi. I'm Avinash, and I'm also in the data science team of Experian.'Generate complete words in {target_language}."
+    prompt = sub_prompt+f"\n{text}"+f"\n\nThis is the output text having only 2 speakers from a diarization model .Find the person names from the output text given here and replace the speaker ids like SPEAKER 0,SPEAKER 1 etc with corresponding person names.For example: Gokul: 'Okay. Yeah. Hi. I'm Gokul, and I'm I'm into the data science team from Experion.'\n\n\n'Avinash: 'Hi. I'm Avinash, and I'm also in the data science team of Experian.' Generate complete words in {target_language}."
     
     print("prompt is",prompt)
     response = openai_client.chat.completions.create(
@@ -104,8 +104,6 @@ def generate_mom(prompt):
 st.set_page_config(page_title="Minutes of Meeting Generator", page_icon="👄")
 
 # logo and header -------------------------------------------------
-
-import streamlit as st
 
 # Center the image using HTML and CSS
 st.markdown(
